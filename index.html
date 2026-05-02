@@ -298,9 +298,9 @@ const stateKeys = ["apiBase","scanLimit","requestDelay","minQuoteVolume","sideMo
 let lastResults = [];
 let abortFlag = false;
 let isScanning = false;
-let autoEnabled = false;
+let autoEnabled = true;
 let autoTimer = null;
-let paperEnabled = false;
+let paperEnabled = true;
 let paper = { nextId: 1, trades: [], pending: [], equitySeries: [] };
 
 const COIN_NAME_MAP={
@@ -377,7 +377,7 @@ function loadSettings(){
   try{
     const raw=localStorage.getItem("v6_settings");
     if(raw){ const d=JSON.parse(raw); stateKeys.forEach(k=>{ if(d[k]!==undefined && $(k)) $(k).value=d[k]; }); }
-    paperEnabled = localStorage.getItem("v6_paper_enabled")==="1";
+    const _pe=localStorage.getItem("v6_paper_enabled"); paperEnabled=_pe===null?true:_pe==="1";
     const p=localStorage.getItem("v6_paper"); if(p) paper=JSON.parse(p);
   }catch(e){}
 }
@@ -758,7 +758,8 @@ async function runScan(source="manual"){
     renderResults(lastResults);
     processPaper(lastResults,tickerMap,s);
     renderPaper();
-    setProgress(100,`完成。訊號 ${lastResults.length}，錯誤 ${errors.length}。模擬開單：${paperEnabled?"ON":"OFF"}`);
+    const _t=new Date(); const _ts=_t.toLocaleString("zh-TW",{hour12:false,month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    setProgress(100,`完成。訊號 ${lastResults.length}，錯誤 ${errors.length}。模擬開單：${paperEnabled?"ON":"OFF"}　最後更新 ${_ts}`);
   }catch(e){
     const msg=e.message||String(e);
     showScanError(msg);
@@ -1230,7 +1231,7 @@ function renderPaper(){
         const pnl = t.unrealized || 0;
         const pct = tradePnlPct(t,pnl);
         const r = tradeR(t,pnl);
-        return `<div class="trade open"><b>${t.symbol} ${t.side}</b> <span class="pill warn">OPEN</span>
+        return `<div class="trade open"><b><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill warn">OPEN</span>
         <div class="pnl-line ${pnlClass(pnl)}">未實現 PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜目前 ${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
         <span class="hint">入場 ${fmt(t.entry,6)}｜現價 ${fmt(t.lastPrice,6)}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜數量 ${fmt(t.qty,4)}｜${t.pattern}</span></div>`;
       }),
@@ -1238,7 +1239,7 @@ function renderPaper(){
         const qty = (sNow.margin * sNow.leverage) / p.entry;
         const tpPnl = projectedPnl(p.side,p.entry,p.target,qty,sNow.feeRate);
         const slPnl = projectedPnl(p.side,p.entry,p.stop,qty,sNow.feeRate);
-        return `<div class="trade"><b>${p.symbol} ${p.side}</b> <span class="pill">PENDING</span>
+        return `<div class="trade"><b><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${p.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${p.symbol}</a> ${p.side}</b> <span class="pill">PENDING</span>
         <div class="pnl-line pnl-neutral">若成交：TP估 ${signed(tpPnl)}U｜SL估 ${signed(slPnl)}U</div>
         <span class="hint">觸發 ${fmt(p.entry,6)}｜停損 ${fmt(p.stop,6)}｜目標 ${fmt(p.target,6)}｜過期 ${timeText(p.expireAt)}｜${p.pattern}</span></div>`;
       })
@@ -1254,7 +1255,7 @@ function renderPaper(){
       const pct = t.status==="closed" && Number.isFinite(t.pnlPct) ? t.pnlPct : tradePnlPct(t,pnl);
       const r = t.status==="closed" && Number.isFinite(t.rMultiple) ? t.rMultiple : tradeR(t,pnl);
       const cls=t.status==="open"?"open":pnl>=0?"win":"loss";
-      return `<div class="trade ${cls}"><b>#${t.id} ${t.symbol} ${t.side}</b> <span class="pill ${t.status==="closed"?(pnl>=0?"good":"bad"):"warn"}">${t.status}${t.exitReason?"/"+t.exitReason:""}</span>
+      return `<div class="trade ${cls}"><b>#${t.id} <a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill ${t.status==="closed"?(pnl>=0?"good":"bad"):"warn"}">${t.status}${t.exitReason?"/"+t.exitReason:""}</span>
       <div class="pnl-line ${pnlClass(pnl)}">${t.status==="closed"?"已實現":"未實現"} PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
       <span class="hint">來源 ${t.source}｜入 ${fmt(t.entry,6)}｜出 ${t.exit?fmt(t.exit,6):"-"}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜開 ${timeText(t.entryTime)}${t.exitTime?"｜平 "+timeText(t.exitTime):""}｜${t.pattern}${t.snapshot?`｜快照 ${t.snapshot.signalAction}/${t.snapshot.signalPattern}｜breakUp=${t.snapshot.breakUp}｜breakDown=${t.snapshot.breakDown}｜v5=${fmt(t.snapshot.v5)}x`:""}</span></div>`;
     }).join("");
@@ -1576,7 +1577,9 @@ try{
   loadSettings();
   updateKpi();
   renderPaper();
-  setProgress(0,"已就緒，按「自動掃描」開始。");
+  $("autoBtn").textContent=`自動更新：${autoEnabled?"ON":"OFF"}`;
+  if(autoEnabled) scheduleAuto();
+  setProgress(0,`已就緒。自動更新：${autoEnabled?"ON":"OFF"}　模擬開單：${paperEnabled?"ON":"OFF"}`);
 }catch(e){
   showScanError(e.message || e);
   setProgress(100,`初始化錯誤：${e.message || e}`);
