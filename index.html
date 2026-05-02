@@ -99,15 +99,15 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </header>
 <main>
 <div class="tabs">
-<div class="tab active" data-tab="scan">掃描</div>
+<div class="tab" data-tab="scan">掃描</div>
 <div class="tab" data-tab="filters">條件</div>
-<div class="tab" data-tab="paper">模擬</div>
+<div class="tab active" data-tab="paper">模擬</div>
 <div class="tab" data-tab="results">訊號</div>
 <div class="tab" data-tab="history">紀錄</div>
 <div class="tab" data-tab="backtest">回測</div>
 <div class="tab" data-tab="help">說明</div>
 </div>
-<section class="tab-panel" id="scan">
+<section class="tab-panel hidden" id="scan">
 <div class="card">
 <div class="card-title"><span>自動掃描</span><span class="pill blue">Binance USDT-M</span></div>
 <div class="field"><label>API Host</label><input id="apiBase" value="https://fapi.binance.com"/></div>
@@ -151,7 +151,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="warnbox">好的短線單應該是：止損小、爆發空間夠、價格已經觸發、不是高位硬追。止損過大會降分；距離 20EMA / 30MA 過遠也會降分，因為那通常是追價。</div>
 </div>
 </section>
-<section class="tab-panel hidden" id="paper">
+<section class="tab-panel" id="paper">
 <div class="paper-toolbar">
 <div class="left">
 <div class="paper-quick-badge">模擬開單 <span class="pill bad" id="paperBadgeMirror">OFF</span></div>
@@ -294,9 +294,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </main>
 <div class="toast" id="toast"></div>
 <div class="quick-tabs" id="quickTabs">
-<button class="quick-tab active" data-tab="scan" type="button">掃描</button>
+<button class="quick-tab" data-tab="scan" type="button">掃描</button>
 <button class="quick-tab" data-tab="filters" type="button">條件</button>
-<button class="quick-tab" data-tab="paper" type="button">模擬</button>
+<button class="quick-tab active" data-tab="paper" type="button">模擬</button>
 <button class="quick-tab" data-tab="results" type="button">訊號</button>
 <button class="quick-tab" data-tab="history" type="button">紀錄</button>
 <button class="quick-tab" data-tab="backtest" type="button">回測</button>
@@ -1655,11 +1655,13 @@ try{
   maybeBackupBeforeVersionUpgrade();
   updateKpi();
   renderPaper();
+  switchTab("paper");
   $("autoBtn").textContent=`自動更新：${autoEnabled?"ON":"OFF"}`;
   if(autoEnabled) scheduleAuto();
   if($("lightRefreshTime")) $("lightRefreshTime").textContent=new Date().toLocaleTimeString("zh-TW",{hour12:false});
   startLightRefresh();
   setProgress(0,`已就緒。自動更新：${autoEnabled?"ON":"OFF"}　模擬開單：${paperEnabled?"ON":"OFF"}`);
+  runScan("auto");
 }catch(e){
   showScanError(e.message || e);
   setProgress(100,`初始化錯誤：${e.message || e}`);
