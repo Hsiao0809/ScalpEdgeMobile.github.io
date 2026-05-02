@@ -156,7 +156,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="left">
 <div class="paper-quick-badge">模擬開單 <span class="pill bad" id="paperBadgeMirror">OFF</span></div>
 <div class="paper-quick-badge">持倉 / 條件單 <span class="pill" id="openCountMirror">0</span></div>
-<div class="paper-quick-badge" style="color:var(--muted);font-size:11px;">價格 <span id="lightRefreshTime">--:--:--</span></div>
+<div class="paper-quick-badge" style="color:var(--muted);font-size:11px;"><span id="lightRefreshTime">--:--:--</span> 刷新</div>
 </div>
 <div class="right">
 <button aria-label="刷新模擬數據" class="secondary icon-btn" id="paperQuickRefreshBtn" title="刷新模擬數據" type="button">
@@ -1259,7 +1259,7 @@ function renderPaper(){
         const pnl = t.unrealized || 0;
         const pct = tradePnlPct(t,pnl);
         const r = tradeR(t,pnl);
-        return `<div class="trade open"><b><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill warn">OPEN</span>
+        return `<div class="trade open"><b><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill warn">OPEN</span> <span class="pill">開單 ${timeText(t.entryTime)}</span>
         <div class="pnl-line ${pnlClass(pnl)}">未實現 PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜目前 ${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
         <span class="hint">入場 ${fmt(t.entry,6)}｜現價 ${fmt(t.lastPrice,6)}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜數量 ${fmt(t.qty,4)}｜${t.pattern}</span></div>`;
       }),
@@ -1657,6 +1657,7 @@ try{
   renderPaper();
   $("autoBtn").textContent=`自動更新：${autoEnabled?"ON":"OFF"}`;
   if(autoEnabled) scheduleAuto();
+  if($("lightRefreshTime")) $("lightRefreshTime").textContent=new Date().toLocaleTimeString("zh-TW",{hour12:false});
   startLightRefresh();
   setProgress(0,`已就緒。自動更新：${autoEnabled?"ON":"OFF"}　模擬開單：${paperEnabled?"ON":"OFF"}`);
 }catch(e){
