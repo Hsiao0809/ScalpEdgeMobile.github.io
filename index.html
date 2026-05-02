@@ -99,9 +99,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="tab active" data-tab="scan">掃描</div>
 <div class="tab" data-tab="filters">條件</div>
 <div class="tab" data-tab="paper">模擬</div>
-<div class="tab" data-tab="backtest">回測</div>
 <div class="tab" data-tab="results">訊號</div>
 <div class="tab" data-tab="history">紀錄</div>
+<div class="tab" data-tab="backtest">回測</div>
 <div class="tab" data-tab="help">說明</div>
 </div>
 <section class="tab-panel" id="scan">
@@ -188,14 +188,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="field"><label>模擬通知模式</label><select id="notifyMode"><option selected="" value="web_sound_vibrate">系統通知 + 聲音 + 震動</option><option value="sound_vibrate">聲音 + 震動</option><option value="vibrate">只震動</option><option value="sound">只聲音</option><option value="off">關閉</option></select></div>
 <div class="field"><label>通知事件</label><select id="notifyEvents"><option selected="" value="all">開倉 + 成交 + TP/SL</option><option value="open_close">只通知開倉與平倉</option><option value="close">只通知 TP/SL 平倉</option></select></div>
 </div>
-<div class="kpi" style="margin-bottom:10px;">
-<div class="kpi-box"><div class="kpi-label">已實現PnL</div><div class="kpi-value" id="realizedPnl">0U</div></div>
-<div class="kpi-box"><div class="kpi-label">未實現PnL</div><div class="kpi-value" id="unrealizedPnl">0U</div></div>
-<div class="kpi-box"><div class="kpi-label">總PnL</div><div class="kpi-value" id="totalPnl">0U</div></div>
-<div class="kpi-box"><div class="kpi-label">勝率</div><div class="kpi-value" id="winRate">-</div></div>
-<div class="kpi-box"><div class="kpi-label">Profit Factor</div><div class="kpi-value" id="profitFactor">-</div></div>
-<div class="kpi-box"><div class="kpi-label">最大回撤</div><div class="kpi-value" id="maxDrawdown">0U</div></div>
-</div>
 <div class="grid">
 <button id="togglePaperBtn" type="button">模擬開單：OFF</button>
 <button class="secondary" id="refreshPaperBtn" type="button">立即刷新數據</button>
@@ -212,6 +204,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="hint" style="margin-top:10px;">這是本機紙上交易，不會連交易所下真單。模擬選項已收進側邊欄；每次掃描會先更新持倉 MFE / MAE / currentR，再判斷 TP、SL、保本、鎖利、回吐停利與時間停損，最後才依新訊號開單。上方刷新圖示可立即更新數據。建議定期匯出 JSON 備份。</div>
 </div></div>
 </aside>
+<div class="card">
+<div class="kpi">
+<div class="kpi-box"><div class="kpi-label">已實現PnL</div><div class="kpi-value" id="realizedPnl">0U</div></div>
+<div class="kpi-box"><div class="kpi-label">未實現PnL</div><div class="kpi-value" id="unrealizedPnl">0U</div></div>
+<div class="kpi-box"><div class="kpi-label">總PnL</div><div class="kpi-value" id="totalPnl">0U</div></div>
+<div class="kpi-box"><div class="kpi-label">勝率</div><div class="kpi-value" id="winRate">-</div></div>
+<div class="kpi-box"><div class="kpi-label">Profit Factor</div><div class="kpi-value" id="profitFactor">-</div></div>
+<div class="kpi-box"><div class="kpi-label">最大回撤</div><div class="kpi-value" id="maxDrawdown">0U</div></div>
+</div>
+</div>
 <div class="card">
 <div class="card-title"><span>目前持倉 / 條件單</span><span class="pill" id="openCount">0</span></div>
 <div class="empty" id="openTradesList">尚無持倉。</div>
@@ -236,24 +238,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="card-title"><span>回測結果</span><span class="pill" id="btTradeCount">0 筆</span></div>
 <div class="empty" id="backtestList">尚未回測。</div>
 </div>
-<div class="card">
-<div class="card-title"><span>單筆交易診斷</span><span class="pill blue">Signal Debug</span></div>
-<div class="grid">
-<div class="field"><label>診斷幣種（輸入幣名即可，如 BTC、btc、比特幣）</label><input id="diagSymbol" value="ZEC" placeholder="BTC / 比特幣 / btc"/></div>
-<div class="field"><label>交易 / 訊號時間</label><input id="diagTime" placeholder="例：2026/5/2 12:05 或 2026-05-02 12:05"/></div>
-<div class="field"><label>實際入場價，可空白</label><input id="diagEntryPrice" placeholder="例：381.67"/></div>
-<div class="field"><label>允許誤差 分鐘</label><input id="diagWindowMin" max="240" min="5" step="5" type="number" value="90"/></div>
-</div>
-<div class="grid">
-<button id="runDiagBtn" type="button">診斷這一筆</button>
-<button class="secondary" id="copyDiagBtn" type="button">複製診斷結果</button>
-</div>
-<div class="hint" style="margin-top:10px;">用途：輸入虧損單的幣種、交易時間與入場價，檢查該時間點用同一套 analyze() 到底判成 LONG、SHORT、NOW、PLAN 或 NO，以及 above / breakUp / 量比 / 均線距離等原始觸發條件。</div>
-</div>
-<div class="card">
-<div class="card-title"><span>診斷結果</span><span class="pill" id="diagBadge">未執行</span></div>
-<div class="empty" id="diagResult">尚未診斷。</div>
-</div>
 </section>
 
 <section class="tab-panel hidden" id="results">
@@ -271,6 +255,24 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="card">
 <div class="card-title"><span>完整模擬紀錄</span><span class="pill" id="tradeCount">0 筆</span></div>
 <div class="empty" id="historyList">尚無紀錄。</div>
+</div>
+<div class="card">
+<div class="card-title"><span>單筆交易診斷</span><span class="pill blue">Signal Debug</span></div>
+<div class="grid">
+<div class="field"><label>診斷幣種（輸入幣名即可，如 BTC、btc、比特幣）</label><input id="diagSymbol" value="ZEC" placeholder="BTC / 比特幣 / btc"/></div>
+<div class="field"><label>交易 / 訊號時間</label><input id="diagTime" type="datetime-local"/></div>
+<div class="field"><label>實際入場價，可空白</label><input id="diagEntryPrice" placeholder="例：381.67"/></div>
+<div class="field"><label>允許誤差 分鐘</label><input id="diagWindowMin" max="240" min="5" step="5" type="number" value="90"/></div>
+</div>
+<div class="grid">
+<button id="runDiagBtn" type="button">診斷這一筆</button>
+<button class="secondary" id="copyDiagBtn" type="button">複製診斷結果</button>
+</div>
+<div class="hint" style="margin-top:10px;">點擊交易紀錄中的「診斷」按鈕可自動填入幣種與時間。也可手動輸入幣種、時間與入場價，檢查該時間點 analyze() 的判斷結果。</div>
+</div>
+<div class="card">
+<div class="card-title"><span>診斷結果</span><span class="pill" id="diagBadge">未執行</span></div>
+<div class="empty" id="diagResult">尚未診斷。</div>
 </div>
 </section>
 <section class="tab-panel hidden" id="help">
@@ -1259,7 +1261,8 @@ function renderPaper(){
       const cls=t.status==="open"?"open":pnl>=0?"win":"loss";
       return `<div class="trade ${cls}"><b>#${t.id} <a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill ${t.status==="closed"?(pnl>=0?"good":"bad"):"warn"}">${t.status}${t.exitReason?"/"+t.exitReason:""}</span>
       <div class="pnl-line ${pnlClass(pnl)}">${t.status==="closed"?"已實現":"未實現"} PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
-      <span class="hint">來源 ${t.source}｜入 ${fmt(t.entry,6)}｜出 ${t.exit?fmt(t.exit,6):"-"}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜開 ${timeText(t.entryTime)}${t.exitTime?"｜平 "+timeText(t.exitTime):""}｜${t.pattern}${t.snapshot?`｜快照 ${t.snapshot.signalAction}/${t.snapshot.signalPattern}｜breakUp=${t.snapshot.breakUp}｜breakDown=${t.snapshot.breakDown}｜v5=${fmt(t.snapshot.v5)}x`:""}</span></div>`;
+      <span class="hint">來源 ${t.source}｜入 ${fmt(t.entry,6)}｜出 ${t.exit?fmt(t.exit,6):"-"}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜開 ${timeText(t.entryTime)}${t.exitTime?"｜平 "+timeText(t.exitTime):""}｜${t.pattern}${t.snapshot?`｜快照 ${t.snapshot.signalAction}/${t.snapshot.signalPattern}｜breakUp=${t.snapshot.breakUp}｜breakDown=${t.snapshot.breakDown}｜v5=${fmt(t.snapshot.v5)}x`:""}</span>
+      <button class="secondary smallbtn" onclick="diagFromTrade('${t.symbol}',${t.entryTime})" style="margin-top:6px;">診斷</button></div>`;
     }).join("");
   }
 }
@@ -1423,12 +1426,23 @@ let lastDiagText = "";
 function parseLocalTimeInput(raw){
   const text = String(raw||"").trim();
   if(!text) return NaN;
+  // datetime-local format: "2026-05-02T12:05"
+  const dt = text.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  if(dt) return new Date(Number(dt[1]),Number(dt[2])-1,Number(dt[3]),Number(dt[4]),Number(dt[5]),Number(dt[6]||0)).getTime();
   const m = text.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/);
-  if(m){
-    return new Date(Number(m[1]), Number(m[2])-1, Number(m[3]), Number(m[4]), Number(m[5]), Number(m[6]||0)).getTime();
-  }
+  if(m) return new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]),Number(m[5]),Number(m[6]||0)).getTime();
   const t = new Date(text).getTime();
   return Number.isFinite(t) ? t : NaN;
+}
+function diagFromTrade(symbol, entryTime){
+  $("diagSymbol").value = symbol;
+  const d = new Date(entryTime);
+  const p = n => String(n).padStart(2,"0");
+  $("diagTime").value = `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+  $("diagEntryPrice").value = "";
+  switchTab("history");
+  $("diagResult").scrollIntoView({behavior:"smooth",block:"start"});
+  runSingleTradeDiagnostic();
 }
 function nearestKIndex(h5, targetMs, windowMin){
   let best=-1, bestDiff=Infinity;
