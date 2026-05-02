@@ -1049,7 +1049,7 @@ function renderResults(items){
   list.innerHTML=items.map(x=>{
     const color=x.grade==="PASS"?"var(--good)":x.grade==="NEAR"?"var(--warn)":"var(--bad)";
     return `<div class="result ${gradeClass(x.grade)}">
-      <div class="result-head"><div><div class="symbol">${x.symbol}</div>
+      <div class="result-head"><div><div class="symbol"><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${x.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${x.symbol}</a></div>
       <div class="subline">方向 ${x.side}｜型態 ${x.pattern}｜價 ${fmt(x.close,6)}｜24H ${fmt(x.change24h)}%｜成交額 ${fmt(x.quoteVolume/1e6,1)}M</div></div>
       <div>${gradeBadge(x)}<div class="score" style="color:${color};">${fmt(x.score,0)}</div></div></div>
       <div class="action-box ${gradeClass(x.grade)}"><div class="action-main">${x.action}</div><div class="action-sub">${x.planText}</div></div>
