@@ -153,6 +153,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="left">
 <div class="paper-quick-badge">模擬開單 <span class="pill bad" id="paperBadgeMirror">OFF</span></div>
 <div class="paper-quick-badge">持倉 / 條件單 <span class="pill" id="openCountMirror">0</span></div>
+<div class="paper-quick-badge" style="color:var(--muted);font-size:11px;">價格 <span id="lightRefreshTime">--:--:--</span></div>
 </div>
 <div class="right">
 <button aria-label="刷新模擬數據" class="secondary icon-btn" id="paperQuickRefreshBtn" title="刷新模擬數據" type="button">
@@ -300,6 +301,7 @@ let abortFlag = false;
 let isScanning = false;
 let autoEnabled = true;
 let autoTimer = null;
+let lightRefreshTimer = null;
 let paperEnabled = true;
 let paper = { nextId: 1, trades: [], pending: [], equitySeries: [] };
 
@@ -1264,6 +1266,22 @@ function renderPaper(){
 function switchTab(name){ document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name)); document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("hidden",p.id!==name)); if(name!=="paper") closePaperDrawer(); }
 
 function scheduleAuto(){ if(autoTimer) clearTimeout(autoTimer); autoTimer=setTimeout(()=>{ if(autoEnabled&&!isScanning) runScan("auto"); }, settings().autoInterval); }
+
+async function lightRefresh(){
+  const hasPos=paper.trades.some(t=>t.status==="open")||paper.pending.some(p=>p.status==="pending");
+  if(!hasPos||isScanning) return;
+  const s=settings();
+  try{
+    const prices=await fetchJson(`${s.apiBase}/fapi/v1/ticker/price`,8000,1);
+    if(!Array.isArray(prices)) return;
+    const tickerMap=new Map(prices.map(t=>[t.symbol,n(t.price)]));
+    processPaper([],tickerMap,s);
+    renderPaper();
+    const el=$("lightRefreshTime");
+    if(el) el.textContent=new Date().toLocaleTimeString("zh-TW",{hour12:false});
+  }catch(e){}
+}
+function startLightRefresh(){ if(lightRefreshTimer) clearInterval(lightRefreshTimer); lightRefreshTimer=setInterval(lightRefresh,15000); }
 function toggleAuto(){ autoEnabled=!autoEnabled; $("autoBtn").textContent=`自動更新：${autoEnabled?"ON":"OFF"}`; $("autoBtn").className=autoEnabled?"secondary":"secondary"; if(autoEnabled) scheduleAuto(); else if(autoTimer) clearTimeout(autoTimer); }
 function togglePaper(){ paperEnabled=!paperEnabled; saveSettings(); renderPaper(); }
 
@@ -1579,6 +1597,7 @@ try{
   renderPaper();
   $("autoBtn").textContent=`自動更新：${autoEnabled?"ON":"OFF"}`;
   if(autoEnabled) scheduleAuto();
+  startLightRefresh();
   setProgress(0,`已就緒。自動更新：${autoEnabled?"ON":"OFF"}　模擬開單：${paperEnabled?"ON":"OFF"}`);
 }catch(e){
   showScanError(e.message || e);
