@@ -848,6 +848,26 @@ function dynamicExitReason(t,s){
   if(s.timeStopMin > 0 && hold >= s.timeStopMin && best >= s.protectProfitFailR && r < 0.20) return "TIME_EXIT";
   return "";
 }
+function shortTermExitReason(t, closePrice){
+  const bars = Number(t.barsSinceEntry5m);
+  const mfeR = Number(t.mfeR);
+  const maeR = Number(t.maeR);
+  const currentR = Number(t.currentR);
+  const hold = Number(t.holdMin);
+  if(!Number.isFinite(closePrice)||!Number.isFinite(mfeR)||!Number.isFinite(maeR)||!Number.isFinite(currentR)) return "";
+  if(Number.isFinite(bars) && bars>=3 && mfeR<0.2) return "NO_FOLLOW_THROUGH";
+  if(t.side==="LONG" && closePrice<t.entry && mfeR<0.2) return "FAILED_IMPULSE";
+  if(t.side==="SHORT" && closePrice>t.entry && mfeR<0.2) return "FAILED_IMPULSE";
+  if(mfeR<0.2 && maeR<=-0.45) return "EARLY_INVALIDATION";
+  if(t.side==="LONG" && Number.isFinite(t.triggerCandleLow) && closePrice<t.triggerCandleLow) return "TRIGGER_CANDLE_LOST";
+  if(t.side==="SHORT" && Number.isFinite(t.triggerCandleHigh) && closePrice>t.triggerCandleHigh) return "TRIGGER_CANDLE_LOST";
+  if(Number.isFinite(hold) && hold>=60 && currentR<1.0) return "TIME_STOP";
+  if(Number.isFinite(hold) && hold>=30 && mfeR<0.5) return "TIME_STOP";
+  if(mfeR>=1.0 && Number.isFinite(t.trailingStopR) && currentR<=t.trailingStopR) return "TRAILING_STOP";
+  if(mfeR>=0.7 && currentR<=0.2) return "TRAILING_STOP";
+  if(mfeR>=0.4 && currentR<=0) return "BREAK_EVEN";
+  return "";
+}
 function projectedPnl(side,entry,exit,qty,feeRate){
   const gross = side==="LONG" ? (exit-entry)*qty : (entry-exit)*qty;
   return gross - entry*qty*feeRate - exit*qty*feeRate;
@@ -943,6 +963,15 @@ function openTradeFromSignal(sig,source,s,ts,force=false){
     bestPnl:0,
     worstPnl:initialUnrealized,
     holdMin:0,
+    barsSinceEntry5m:0,
+    mfeR:0,
+    maeR:0,
+    currentR:0,
+    earlyExitTriggered:false,
+    triggerCandleHigh:Number(sig.prevHigh),
+    triggerCandleLow:Number(sig.prevLow),
+    breakoutLevel:Number(sig.triggerPrice||sig.planEntry),
+    trailingStopR:null,
     entryTime:ts,
     entryScore:sig.score,
     pattern:sig.pattern,
@@ -970,12 +999,22 @@ function addPendingFromSignal(sig,s,ts){
 }
 function processPaper(signals,tickerMap,s){
   const ts=nowMs();
+  const signalCloseMap=new Map((Array.isArray(signals)?signals:[]).map(sig=>[sig.symbol,n(sig.close)]));
   for(const t of currentOpenTrades()){
     const price=tickerMap.get(t.symbol);
     if(!price) continue;
     t.lastPrice=price;
     t.unrealized=grossPnl(t,price)-t.openFee-(price*t.qty*t.feeRate);
     updateTradeExcursion(t,t.unrealized,ts);
+    t.holdMin=(ts-t.entryTime)/60000;
+    t.barsSinceEntry5m=Math.floor(t.holdMin/5);
+    t.mfeR=Number.isFinite(t.bestR)?t.bestR:0;
+    t.maeR=Number.isFinite(t.worstR)?t.worstR:0;
+    t.currentR=tradeR(t,t.unrealized);
+    if(t.mfeR>=1.0) t.trailingStopR=Math.max(0.5,t.mfeR-0.5);
+    else if(t.mfeR>=0.7) t.trailingStopR=0.2;
+    else if(t.mfeR>=0.4) t.trailingStopR=0;
+    else t.trailingStopR=null;
 
     let closed=false;
     if(t.side==="LONG"){
@@ -987,10 +1026,13 @@ function processPaper(signals,tickerMap,s){
     }
     if(closed) continue;
 
-    const dynReason = dynamicExitReason(t,s);
-    if(dynReason){
-      closeTrade(t,price,dynReason,ts);
-    }
+    const closeRef=signalCloseMap.get(t.symbol)||price;
+    const earlyReason=shortTermExitReason(t,closeRef);
+    t.earlyExitTriggered=!!earlyReason;
+    if(earlyReason){ closeTrade(t,price,earlyReason,ts); continue; }
+
+    const dynReason=dynamicExitReason(t,s);
+    if(dynReason){ closeTrade(t,price,dynReason,ts); }
   }
   for(const p of paper.pending.filter(x=>x.status==="pending")){
     const price=tickerMap.get(p.symbol);
@@ -1260,8 +1302,8 @@ function renderPaper(){
         const pct = tradePnlPct(t,pnl);
         const r = tradeR(t,pnl);
         return `<div class="trade open"><b><a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill warn">OPEN</span> <span class="pill">開單 ${timeText(t.entryTime)}</span>
-        <div class="pnl-line ${pnlClass(pnl)}">未實現 PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜目前 ${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
-        <span class="hint">入場 ${fmt(t.entry,6)}｜現價 ${fmt(t.lastPrice,6)}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜數量 ${fmt(t.qty,4)}｜${t.pattern}</span></div>`;
+        <div class="pnl-line ${pnlClass(pnl)}">未實現 PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜目前 ${signed(r,2)}R｜MFE ${signed(t.mfeR??t.bestR??0,2)}R｜MAE ${signed(t.maeR??t.worstR??0,2)}R｜bars ${fmt(t.barsSinceEntry5m??0,0)}｜早退 ${t.earlyExitTriggered?"ON":"OFF"}</div>
+        <span class="hint">入場 ${fmt(t.entry,6)}｜現價 ${fmt(t.lastPrice,6)}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜數量 ${fmt(t.qty,4)}｜breakout ${fmt(t.breakoutLevel??0,6)}｜${t.pattern}</span></div>`;
       }),
       ...pending.map(p=>{
         const qty = (sNow.margin * sNow.leverage) / p.entry;
@@ -1284,7 +1326,7 @@ function renderPaper(){
       const r = t.status==="closed" && Number.isFinite(t.rMultiple) ? t.rMultiple : tradeR(t,pnl);
       const cls=t.status==="open"?"open":pnl>=0?"win":"loss";
       return `<div class="trade ${cls}"><b>#${t.id} <a href="https://www.tradingview.com/chart/?symbol=BINANCE:${t.symbol}.P" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.3);">${t.symbol}</a> ${t.side}</b> <span class="pill ${t.status==="closed"?(pnl>=0?"good":"bad"):"warn"}">${t.status}${t.exitReason?"/"+t.exitReason:""}</span>
-      <div class="pnl-line ${pnlClass(pnl)}">${t.status==="closed"?"已實現":"未實現"} PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜${signed(r,2)}R｜MFE ${signed(t.bestR??0,2)}R｜MAE ${signed(t.worstR??0,2)}R</div>
+      <div class="pnl-line ${pnlClass(pnl)}">${t.status==="closed"?"已實現":"未實現"} PnL：${signed(pnl)}U｜保證金 ${signed(pct)}%｜${signed(r,2)}R｜MFE ${signed(t.mfeR??t.bestR??0,2)}R｜MAE ${signed(t.maeR??t.worstR??0,2)}R｜早退 ${t.earlyExitTriggered?"ON":"OFF"}</div>
       <span class="hint">來源 ${t.source}｜入 ${fmt(t.entry,6)}｜出 ${t.exit?fmt(t.exit,6):"-"}｜停損 ${fmt(t.stop,6)}｜目標 ${fmt(t.target,6)}｜持倉 ${fmt(t.holdMin??0,0)}分｜開 ${timeText(t.entryTime)}${t.exitTime?"｜平 "+timeText(t.exitTime):""}｜${t.pattern}${t.snapshot?`｜快照 ${t.snapshot.signalAction}/${t.snapshot.signalPattern}｜breakUp=${t.snapshot.breakUp}｜breakDown=${t.snapshot.breakDown}｜v5=${fmt(t.snapshot.v5)}x`:""}</span>
       <button class="secondary smallbtn" onclick="diagFromTrade('${t.symbol}',${t.entryTime})" style="margin-top:6px;">診斷</button></div>`;
     }).join("");
@@ -1649,6 +1691,12 @@ try{
     if(!Number.isFinite(Number(t.bestPnl))) t.bestPnl = Number.isFinite(Number(t.pnl)) ? Math.max(0, Number(t.pnl)) : 0;
     if(!Number.isFinite(Number(t.worstPnl))) t.worstPnl = Number.isFinite(Number(t.pnl)) ? Number(t.pnl) : 0;
     if(!Number.isFinite(Number(t.holdMin)) && t.entryTime && t.exitTime) t.holdMin=(t.exitTime-t.entryTime)/60000;
+    if(!Number.isFinite(Number(t.barsSinceEntry5m))) t.barsSinceEntry5m=Math.max(0,Math.floor(Number(t.holdMin||0)/5));
+    if(!Number.isFinite(Number(t.mfeR))) t.mfeR=Number.isFinite(Number(t.bestR))?Number(t.bestR):0;
+    if(!Number.isFinite(Number(t.maeR))) t.maeR=Number.isFinite(Number(t.worstR))?Number(t.worstR):0;
+    if(!Number.isFinite(Number(t.currentR))) t.currentR=0;
+    if(typeof t.earlyExitTriggered!=="boolean") t.earlyExitTriggered=false;
+    if(!Number.isFinite(Number(t.breakoutLevel))) t.breakoutLevel=Number(t.entry||0);
   }
   if(!Number.isFinite(Number(paper.nextId))) paper.nextId=paper.trades.length+paper.pending.length+1;
   loadSettings();
