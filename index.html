@@ -121,6 +121,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </div>
 <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
 <div class="status" id="status">尚未掃描。</div>
+<div class="hidden" id="scanErrorBox" style="margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,69,58,.12);border:1px solid rgba(255,69,58,.35);color:var(--bad);font-size:13px;"></div>
 </div>
 <div class="card">
 <div class="card-title"><span>目標反推</span><span class="pill orange">倉位數學</span></div>
@@ -223,27 +224,6 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="empty" id="openTradesList">尚無持倉。</div>
 </div></section>
 
-<section class="tab-panel hidden" id="backtest">
-<div class="card">
-<div class="card-title"><span>單幣策略回測</span><span class="pill orange">Browser Backtest</span></div>
-<div class="grid">
-<div class="field"><label>回測幣種（輸入幣名即可，如 BTC、btc、比特幣）</label><input id="btSymbol" value="ZEC" placeholder="BTC / 比特幣 / btc"/></div>
-<div class="field"><label>5m K線數量</label><input id="btLimit5m" max="5000" min="260" step="20" type="number" value="1500"/></div>
-<div class="field"><label>訊號類型</label><select id="btSignalFilter"><option selected value="LONG_CONTINUATION">只測 LONG_CONTINUATION</option><option value="ALL_NOW">所有 NOW 訊號</option><option value="NOW_LONG">所有 NOW_LONG</option><option value="NOW_SHORT">所有 NOW_SHORT</option></select></div>
-<div class="field"><label>同時持倉</label><select id="btPositionMode"><option selected value="single">一次只持一單</option><option value="multi">允許重複開單</option></select></div>
-</div>
-<div class="grid">
-<button id="runBacktestBtn" type="button">開始回測</button>
-<button class="secondary" id="copyBacktestBtn" type="button">複製回測結果</button>
-</div>
-<div class="hint" style="margin-top:10px;">此回測直接用 Binance K 線在瀏覽器執行，會用目前策略參數重播歷史 5m 訊號。若同一根 K 同時碰到 TP/SL，採保守規則：先算 SL。</div>
-</div>
-<div class="card">
-<div class="card-title"><span>回測結果</span><span class="pill" id="btTradeCount">0 筆</span></div>
-<div class="empty" id="backtestList">尚未回測。</div>
-</div>
-</section>
-
 <section class="tab-panel hidden" id="results">
 <div class="card">
 <div class="card-title"><span>最新訊號</span><span class="pill" id="resultCount">0 筆</span></div>
@@ -277,6 +257,26 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="card">
 <div class="card-title"><span>診斷結果</span><span class="pill" id="diagBadge">未執行</span></div>
 <div class="empty" id="diagResult">尚未診斷。</div>
+</div>
+</section>
+<section class="tab-panel hidden" id="backtest">
+<div class="card">
+<div class="card-title"><span>單幣策略回測</span><span class="pill orange">Browser Backtest</span></div>
+<div class="grid">
+<div class="field"><label>回測幣種（輸入幣名即可，如 BTC、btc、比特幣）</label><input id="btSymbol" value="ZEC" placeholder="BTC / 比特幣 / btc"/></div>
+<div class="field"><label>5m K線數量</label><input id="btLimit5m" max="5000" min="260" step="20" type="number" value="1500"/></div>
+<div class="field"><label>訊號類型</label><select id="btSignalFilter"><option selected value="LONG_CONTINUATION">只測 LONG_CONTINUATION</option><option value="ALL_NOW">所有 NOW 訊號</option><option value="NOW_LONG">所有 NOW_LONG</option><option value="NOW_SHORT">所有 NOW_SHORT</option></select></div>
+<div class="field"><label>同時持倉</label><select id="btPositionMode"><option selected value="single">一次只持一單</option><option value="multi">允許重複開單</option></select></div>
+</div>
+<div class="grid">
+<button id="runBacktestBtn" type="button">開始回測</button>
+<button class="secondary" id="copyBacktestBtn" type="button">複製回測結果</button>
+</div>
+<div class="hint" style="margin-top:10px;">此回測直接用 Binance K 線在瀏覽器執行，會用目前策略參數重播歷史 5m 訊號。若同一根 K 同時碰到 TP/SL，採保守規則：先算 SL。</div>
+</div>
+<div class="card">
+<div class="card-title"><span>回測結果</span><span class="pill" id="btTradeCount">0 筆</span></div>
+<div class="empty" id="backtestList">尚未回測。</div>
 </div>
 </section>
 <section class="tab-panel hidden" id="help">
