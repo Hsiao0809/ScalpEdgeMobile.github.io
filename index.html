@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>ScalpEdge Mobile v7.3 執行防呆版</title>
+<title>ScalpEdge Mobile v7.4 趨勢跟單版</title>
 <style>
 :root{
   --bg:#070a0f;--panel:#101722;--panel2:#172033;--text:#edf3ff;--muted:#94a3b8;
@@ -94,8 +94,8 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </head>
 <body>
 <header>
-<h1>ScalpEdge Mobile v7.3</h1>
-<div class="sub">達到 NOW 才能市價模擬開單；PLAN 僅建立條件單。v7.3 加入開單前二次驗證、PLAN 突破觸發價、訊號快照與過期防呆。</div>
+<h1>ScalpEdge Mobile v7.4</h1>
+<div class="sub">預設以 NOW + PLAN 捕捉趨勢延續；v7.4 放寬緩漲行情過濾、加入趨勢跟單訊號，並延長持倉保護避免太早被洗出。</div>
 </header>
 <main>
 <div class="tabs">
@@ -112,9 +112,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="card-title"><span>自動掃描</span><span class="pill blue">Binance USDT-M</span></div>
 <div class="field"><label>API Host</label><input id="apiBase" value="https://fapi.binance.com"/></div>
 <div class="grid">
-<div class="field"><label>深度分析前 N 個候選</label><input id="scanLimit" max="100" min="5" step="5" type="number" value="35"/></div>
+<div class="field"><label>深度分析前 N 個候選</label><input id="scanLimit" max="100" min="5" step="5" type="number" value="60"/></div>
 <div class="field"><label>請求間隔 ms</label><input id="requestDelay" max="2000" min="0" step="20" type="number" value="180"/></div>
-<div class="field"><label>最低 24H 成交額 USDT</label><input id="minQuoteVolume" min="0" step="1000000" type="number" value="30000000"/></div>
+<div class="field"><label>最低 24H 成交額 USDT</label><input id="minQuoteVolume" min="0" step="1000000" type="number" value="15000000"/></div>
 <div class="field"><label>方向模式</label><select id="sideMode"><option value="AUTO">自動多空</option><option value="LONG">只找多</option><option value="SHORT">只找空</option></select></div>
 <div class="field"><label>自動更新間隔</label><select id="autoInterval"><option value="60000">1 分鐘</option><option value="180000">3 分鐘</option><option selected="" value="300000">5 分鐘</option><option value="600000">10 分鐘</option></select></div>
 <div class="field"><label>排序</label><select id="sortBy"><option value="tradeRank">可模擬優先</option><option value="score">Score</option><option value="goodTradeIndex">低損爆發指數</option><option value="maQuality">MA距離分</option><option value="rr">RR</option><option value="volRatio5">5m量比</option></select></div>
@@ -140,13 +140,13 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="field"><label>槓桿</label><input id="leverage" min="1" step="0.5" type="number" value="10"/></div>
 <div class="field"><label>手續費單邊 %</label><input id="feeRate" min="0" step="0.01" type="number" value="0.04"/></div>
 <div class="field"><label>短線目標模式</label><select id="targetMode"><option selected="" value="scalp">短線 RR 目標</option><option value="goal100u">單筆 100U 目標</option></select></div>
-<div class="field"><label>短線最低 RR</label><input id="takeRR" min="0.5" step="0.1" type="number" value="1.5"/></div>
-<div class="field"><label>最低 Score</label><input id="minScore" max="100" min="0" step="1" type="number" value="68"/></div>
-<div class="field"><label>最大止損 %</label><input id="maxStop" min="0.2" step="0.1" type="number" value="2.2"/></div>
-<div class="field"><label>最低低損爆發指數</label><input id="minGoodIndex" max="100" min="0" step="1" type="number" value="58"/></div>
-<div class="field"><label>最低 5m 量比</label><input id="minVol5" min="0" step="0.1" type="number" value="1.15"/></div>
-<div class="field"><label>最低 1H 量比</label><input id="minVol1h" min="0" step="0.1" type="number" value="1.05"/></div>
-<div class="field"><label>5m 突破回看根數</label><input id="breakLookback" max="20" min="3" step="1" type="number" value="8"/></div>
+<div class="field"><label>短線最低 RR</label><input id="takeRR" min="0.5" step="0.1" type="number" value="1.25"/></div>
+<div class="field"><label>最低 Score</label><input id="minScore" max="100" min="0" step="1" type="number" value="62"/></div>
+<div class="field"><label>最大止損 %</label><input id="maxStop" min="0.2" step="0.1" type="number" value="2.8"/></div>
+<div class="field"><label>最低低損爆發指數</label><input id="minGoodIndex" max="100" min="0" step="1" type="number" value="50"/></div>
+<div class="field"><label>最低 5m 量比</label><input id="minVol5" min="0" step="0.1" type="number" value="1"/></div>
+<div class="field"><label>最低 1H 量比</label><input id="minVol1h" min="0" step="0.1" type="number" value="0.9"/></div>
+<div class="field"><label>5m 突破回看根數</label><input id="breakLookback" max="20" min="3" step="1" type="number" value="6"/></div>
 <div class="field"><label>結果顯示</label><select id="showMode"><option value="all">全部</option><option selected="" value="tradeable">只看 NOW/PLAN</option><option value="now">只看 NOW</option></select></div>
 </div>
 <div class="warnbox">好的短線單應該是：止損小、爆發空間夠、價格已經觸發、不是高位硬追。止損過大會降分；距離 20EMA / 30MA 過遠也會降分，因為那通常是追價。</div>
@@ -178,17 +178,17 @@ button:disabled{opacity:.55;cursor:not-allowed}
 <div class="paper-drawer-body"><div class="card">
 <div class="card-title"><span>自動模擬開單</span><span class="pill bad" id="paperBadge">OFF</span></div>
 <div class="grid">
-<div class="field"><label>模擬開單來源</label><select id="paperSource"><option selected="" value="now">只開 NOW</option><option value="now_plan">NOW + 建立 PLAN 條件單</option></select></div>
-<div class="field"><label>最大同時持倉</label><input id="maxOpenTrades" max="10" min="1" step="1" type="number" value="2"/></div>
+<div class="field"><label>模擬開單來源</label><select id="paperSource"><option value="now">只開 NOW</option><option selected="" value="now_plan">NOW + 建立 PLAN 條件單</option></select></div>
+<div class="field"><label>最大同時持倉</label><input id="maxOpenTrades" max="10" min="1" step="1" type="number" value="4"/></div>
 <div class="field"><label>同幣只允許一單</label><select id="oneTradePerSymbol"><option selected="" value="1">是</option><option value="0">否</option></select></div>
-<div class="field"><label>PLAN 過期時間 分鐘</label><input id="pendingExpireMin" max="240" min="5" step="5" type="number" value="45"/></div>
+<div class="field"><label>PLAN 過期時間 分鐘</label><input id="pendingExpireMin" max="240" min="5" step="5" type="number" value="90"/></div>
 <div class="field"><label>動態出場</label><select id="dynamicExitMode"><option selected="" value="conservative">ON 保守保護</option><option value="off">OFF 只等 TP/SL</option></select></div>
-<div class="field"><label>浮盈失敗啟動 R</label><input id="protectProfitFailR" max="1.5" min="0.1" step="0.05" type="number" value="0.35"/></div>
-<div class="field"><label>保本啟動 R</label><input id="protectBreakevenR" max="2" min="0.2" step="0.05" type="number" value="0.60"/></div>
-<div class="field"><label>鎖利啟動 R</label><input id="protectLockR" max="2.5" min="0.3" step="0.05" type="number" value="0.80"/></div>
-<div class="field"><label>回吐停利啟動 R</label><input id="protectTrailR" max="3" min="0.5" step="0.05" type="number" value="1.00"/></div>
-<div class="field"><label>允許回吐 R</label><input id="protectTrailGivebackR" max="1.5" min="0.1" step="0.05" type="number" value="0.45"/></div>
-<div class="field"><label>時間停損 分鐘</label><input id="timeStopMin" max="240" min="0" step="5" type="number" value="30"/></div>
+<div class="field"><label>浮盈失敗啟動 R</label><input id="protectProfitFailR" max="1.5" min="0.1" step="0.05" type="number" value="0.5"/></div>
+<div class="field"><label>保本啟動 R</label><input id="protectBreakevenR" max="2" min="0.2" step="0.05" type="number" value="0.8"/></div>
+<div class="field"><label>鎖利啟動 R</label><input id="protectLockR" max="2.5" min="0.3" step="0.05" type="number" value="1.1"/></div>
+<div class="field"><label>回吐停利啟動 R</label><input id="protectTrailR" max="3" min="0.5" step="0.05" type="number" value="1.35"/></div>
+<div class="field"><label>允許回吐 R</label><input id="protectTrailGivebackR" max="1.5" min="0.1" step="0.05" type="number" value="0.65"/></div>
+<div class="field"><label>時間停損 分鐘</label><input id="timeStopMin" max="240" min="0" step="5" type="number" value="75"/></div>
 <div class="field"><label>模擬通知模式</label><select id="notifyMode"><option selected="" value="web_sound_vibrate">系統通知 + 聲音 + 震動</option><option value="sound_vibrate">聲音 + 震動</option><option value="vibrate">只震動</option><option value="sound">只聲音</option><option value="off">關閉</option></select></div>
 <div class="field"><label>通知事件</label><select id="notifyEvents"><option selected="" value="all">開倉 + 成交 + TP/SL</option><option value="open_close">只通知開倉與平倉</option><option value="close">只通知 TP/SL 平倉</option></select></div>
 </div>
@@ -287,7 +287,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
         2. 開啟模擬後，NOW 會用目前價格模擬市價開單；PLAN 只會建立條件單，到價才模擬成交。<br/>
         3. 後續每次掃描或在模擬頁按「立即刷新數據」，都會用最新價格更新每張單的未實現 PnL；觸及停損或目標即自動平倉並轉成已實現 PnL。<br/>
         4. 手續費以「單邊手續費 %」計入開倉與平倉。<br/>5. 手機通知可用於模擬開倉、條件單成交、TP/SL 平倉；若系統通知被瀏覽器限制，仍會用頁面提示、聲音、震動提醒。<br/>
-        6. 這不是回測，這是前向紙上交易；要連續跑幾天，才看得出策略是否有正期望值。<br/>7. 20EMA / 30MA / 200MA 距離會納入評分：顯示「高於/低於」與顏色標記；方向對但離均線太遠，會被視為追價風險而降分。<br/>8. 交易紀錄建議定期匯出 JSON；JSON 可完整還原，CSV 適合做表格分析，交易摘要適合直接貼給我判讀策略。<br/>9. 若自動掃描卡住，先按「停止 / 重置」，再按「自動掃描」；若仍失敗，看掃描頁下方錯誤訊息。<br/>10. v6.8 新增動態出場：只在單子曾經浮盈後啟動保護，目標是保留原本 TP 能力，同時減少 DASH 這種「先賺後打完整 SL」的情況。<br>11. v7.0 把模擬頁選項收進右側側邊欄，並在模擬頁主畫面新增純圖示刷新按鈕。<br/>12. v7.3 新增執行防呆：NOW 才能市價開單；PLAN 只用突破/跌破觸發價建立條件單；開單前保存訊號快照，避免 MIXED / 低量 / 未突破訊號被誤開。
+        6. 這不是回測，這是前向紙上交易；要連續跑幾天，才看得出策略是否有正期望值。<br/>7. 20EMA / 30MA / 200MA 距離會納入評分：顯示「高於/低於」與顏色標記；方向對但離均線太遠，會被視為追價風險而降分。<br/>8. 交易紀錄建議定期匯出 JSON；JSON 可完整還原，CSV 適合做表格分析，交易摘要適合直接貼給我判讀策略。<br/>9. 若自動掃描卡住，先按「停止 / 重置」，再按「自動掃描」；若仍失敗，看掃描頁下方錯誤訊息。<br/>10. v6.8 新增動態出場：只在單子曾經浮盈後啟動保護，目標是保留原本 TP 能力，同時減少 DASH 這種「先賺後打完整 SL」的情況。<br>11. v7.0 把模擬頁選項收進右側側邊欄，並在模擬頁主畫面新增純圖示刷新按鈕。<br/>12. v7.3 新增執行防呆：NOW 才能市價開單；PLAN 只用突破/跌破觸發價建立條件單；開單前保存訊號快照，避免 MIXED / 低量 / 未突破訊號被誤開。<br/>13. v7.4 改為 NOW + PLAN 預設、增加 LONG_TREND_FOLLOW / SHORT_TREND_FOLLOW，讓緩漲趨勢不會只因為沒剛好突破 5m 高點就完全錯過。
       </div>
 </div>
 </section>
@@ -309,7 +309,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </div>
 <script>
 const $ = id => document.getElementById(id);
-const APP_VERSION = "7.3.1";
+const APP_VERSION = "7.4.0";
 const stateKeys = ["apiBase","scanLimit","requestDelay","minQuoteVolume","sideMode","autoInterval","sortBy","margin","leverage","feeRate","targetMode","takeRR","minScore","maxStop","minGoodIndex","minVol5","minVol1h","breakLookback","showMode","paperSource","maxOpenTrades","oneTradePerSymbol","pendingExpireMin","dynamicExitMode","protectProfitFailR","protectBreakevenR","protectLockR","protectTrailR","protectTrailGivebackR","timeStopMin","notifyMode","notifyEvents","btSymbol","btLimit5m","btSignalFilter","btPositionMode"];
 
 let lastResults = [];
@@ -352,9 +352,9 @@ function timeText(ts){ return new Date(ts).toLocaleString("zh-TW",{hour12:false,
 function settings(){
   return {
     apiBase:$("apiBase").value.replace(/\/+$/,""),
-    scanLimit:clamp(n($("scanLimit").value,35),5,100),
+    scanLimit:clamp(n($("scanLimit").value,60),5,100),
     requestDelay:Math.max(0,n($("requestDelay").value,180)),
-    minQuoteVolume:n($("minQuoteVolume").value,30000000),
+    minQuoteVolume:n($("minQuoteVolume").value,15000000),
     sideMode:$("sideMode").value,
     autoInterval:n($("autoInterval").value,300000),
     sortBy:$("sortBy").value,
@@ -362,25 +362,25 @@ function settings(){
     leverage:n($("leverage").value,10),
     feeRate:n($("feeRate").value,0.04)/100,
     targetMode:$("targetMode").value,
-    takeRR:n($("takeRR").value,1.5),
-    minScore:n($("minScore").value,68),
-    maxStop:n($("maxStop").value,2.2),
-    minGoodIndex:n($("minGoodIndex").value,58),
-    minVol5:n($("minVol5").value,1.15),
-    minVol1h:n($("minVol1h").value,1.05),
-    breakLookback:clamp(n($("breakLookback").value,8),3,20),
+    takeRR:n($("takeRR").value,1.25),
+    minScore:n($("minScore").value,62),
+    maxStop:n($("maxStop").value,2.8),
+    minGoodIndex:n($("minGoodIndex").value,50),
+    minVol5:n($("minVol5").value,1),
+    minVol1h:n($("minVol1h").value,0.9),
+    breakLookback:clamp(n($("breakLookback").value,6),3,20),
     showMode:$("showMode").value,
     paperSource:$("paperSource").value,
-    maxOpenTrades:clamp(n($("maxOpenTrades").value,2),1,10),
+    maxOpenTrades:clamp(n($("maxOpenTrades").value,4),1,10),
     oneTradePerSymbol:$("oneTradePerSymbol").value==="1",
-    pendingExpireMin:n($("pendingExpireMin").value,45),
+    pendingExpireMin:n($("pendingExpireMin").value,90),
     dynamicExitMode:$("dynamicExitMode").value,
-    protectProfitFailR:n($("protectProfitFailR").value,0.35),
-    protectBreakevenR:n($("protectBreakevenR").value,0.60),
-    protectLockR:n($("protectLockR").value,0.80),
-    protectTrailR:n($("protectTrailR").value,1.00),
-    protectTrailGivebackR:n($("protectTrailGivebackR").value,0.45),
-    timeStopMin:n($("timeStopMin").value,30),
+    protectProfitFailR:n($("protectProfitFailR").value,0.50),
+    protectBreakevenR:n($("protectBreakevenR").value,0.80),
+    protectLockR:n($("protectLockR").value,1.10),
+    protectTrailR:n($("protectTrailR").value,1.35),
+    protectTrailGivebackR:n($("protectTrailGivebackR").value,0.65),
+    timeStopMin:n($("timeStopMin").value,75),
     notifyMode:$("notifyMode").value,
     notifyEvents:$("notifyEvents").value
   };
@@ -400,6 +400,36 @@ function loadSettings(){
   }catch(e){}
 }
 function savePaper(){ localStorage.setItem("v6_paper", JSON.stringify(paper)); }
+
+function setIfStricter(id, value, isStricter){
+  const el=$(id);
+  if(el && isStricter(n(el.value))) el.value=String(value);
+}
+function migrateSettingsForProfitMode(prev){
+  if(prev===APP_VERSION) return;
+  const oldMainline = !prev || /^7\.[0-3]\b/.test(prev) || /^6\./.test(prev);
+  if(!oldMainline) return;
+
+  setIfStricter("scanLimit",60,v=>v<60);
+  setIfStricter("minQuoteVolume",15000000,v=>v>15000000);
+  setIfStricter("takeRR",1.25,v=>v>1.25);
+  setIfStricter("minScore",62,v=>v>62);
+  setIfStricter("maxStop",2.8,v=>v<2.8);
+  setIfStricter("minGoodIndex",50,v=>v>50);
+  setIfStricter("minVol5",1,v=>v>1);
+  setIfStricter("minVol1h",0.9,v=>v>0.9);
+  setIfStricter("breakLookback",6,v=>v>6);
+  setIfStricter("maxOpenTrades",4,v=>v<4);
+  setIfStricter("pendingExpireMin",90,v=>v<90);
+  setIfStricter("protectProfitFailR",0.5,v=>v<0.5);
+  setIfStricter("protectBreakevenR",0.8,v=>v<0.8);
+  setIfStricter("protectLockR",1.1,v=>v<1.1);
+  setIfStricter("protectTrailR",1.35,v=>v<1.35);
+  setIfStricter("protectTrailGivebackR",0.65,v=>v<0.65);
+  setIfStricter("timeStopMin",75,v=>v<75);
+  if($("paperSource") && $("paperSource").value==="now") $("paperSource").value="now_plan";
+  saveSettings();
+}
 
 function updateKpi(){
   const s=settings(), pos=s.margin*s.leverage, need=100/pos*100;
@@ -555,9 +585,11 @@ function analyze(symbol,ticker,h5,h1,h4,s){
   const v5=volRatio(h5,20), v1=volRatio(h1,20), a5=atrPct(h5,14), a1=atrPct(h1,14);
   const above=close>e20_5 && close>e30_5, below=close<e20_5 && close<e30_5;
   const breakUp=close>prevHigh, breakDown=close<prevLow;
+  const prev5=h5[h5.length-2] || last5;
   const bodyPct=Math.abs(last5.close-last5.open)/close*100;
   const upperWick=(last5.high-Math.max(last5.open,last5.close))/close*100;
   const lowerWick=(Math.min(last5.open,last5.close)-last5.low)/close*100;
+  const recentLow5=Math.min(...h5.slice(-5).map(x=>x.low)), recentHigh5=Math.max(...h5.slice(-5).map(x=>x.high));
   const recentLow10=Math.min(...h5.slice(-10).map(x=>x.low)), recentHigh10=Math.max(...h5.slice(-10).map(x=>x.high));
   const recentHigh72=Math.max(...h1.slice(-72).map(x=>x.high)), recentLow72=Math.min(...h1.slice(-72).map(x=>x.low));
   const nearHigh = high24>0 ? (high24-close)/close*100 < 0.55 : false;
@@ -573,23 +605,35 @@ function analyze(symbol,ticker,h5,h1,h4,s){
   else if(longStructure>=55 && longStructure>=shortStructure+7) bias="LONG";
   else if(shortStructure>=55 && shortStructure>=longStructure+7) bias="SHORT";
 
-  const bullTrap = (last5.high>prevHigh && close<prevHigh && upperWick>Math.max(bodyPct*1.15,a5*.18)) || (bias==="LONG" && nearHigh && upperWick>Math.max(bodyPct*1.2,a5*.22) && !breakUp);
-  const bearTrap = (last5.low<prevLow && close>prevLow && lowerWick>Math.max(bodyPct*1.15,a5*.18)) || (bias==="SHORT" && nearLow && lowerWick>Math.max(bodyPct*1.2,a5*.22) && !breakDown);
+  const bullishBody = last5.close>last5.open && close>=prev5.close;
+  const bearishBody = last5.close<last5.open && close<=prev5.close;
+  const strongLongTrend = bias==="LONG" && longStructure>=64 && above && distEma20>=0 && distMa30>=0;
+  const strongShortTrend = bias==="SHORT" && shortStructure>=64 && below && distEma20<=0 && distMa30<=0;
+  const softBreakUp = close >= prevHigh * 0.9985;
+  const softBreakDown = close <= prevLow * 1.0015;
+  const bullTrap = (last5.high>prevHigh && close<prevHigh && upperWick>Math.max(bodyPct*1.45,a5*.28) && bearishBody) || (bias==="LONG" && nearHigh && upperWick>Math.max(bodyPct*1.55,a5*.32) && !breakUp && bearishBody);
+  const bearTrap = (last5.low<prevLow && close>prevLow && lowerWick>Math.max(bodyPct*1.45,a5*.28) && bullishBody) || (bias==="SHORT" && nearLow && lowerWick>Math.max(bodyPct*1.55,a5*.32) && !breakDown && bullishBody);
 
   let scalpSide="NEUTRAL", pattern="MIXED";
   if(bearTrap && above){ scalpSide="LONG"; pattern="BEAR_TRAP_REVERSAL"; }
   else if(bullTrap && below){ scalpSide="SHORT"; pattern="BULL_TRAP_REVERSAL"; }
-  else if(bias==="LONG" && nearHigh && upperWick>Math.max(bodyPct*1.1,a5*.18)){ scalpSide="SHORT"; pattern = below ? "LONG_EXHAUSTION_SHORT_CONFIRMED" : "LONG_EXHAUSTION_NEAR_RESISTANCE"; }
-  else if(bias==="SHORT" && nearLow && lowerWick>Math.max(bodyPct*1.1,a5*.18)){ scalpSide="LONG"; pattern = above ? "SHORT_EXHAUSTION_LONG_CONFIRMED" : "SHORT_EXHAUSTION_NEAR_SUPPORT"; }
+  else if(bias==="LONG" && nearHigh && bearishBody && upperWick>Math.max(bodyPct*1.5,a5*.30)){ scalpSide="SHORT"; pattern = below ? "LONG_EXHAUSTION_SHORT_CONFIRMED" : "LONG_EXHAUSTION_NEAR_RESISTANCE"; }
+  else if(bias==="SHORT" && nearLow && bullishBody && lowerWick>Math.max(bodyPct*1.5,a5*.30)){ scalpSide="LONG"; pattern = above ? "SHORT_EXHAUSTION_LONG_CONFIRMED" : "SHORT_EXHAUSTION_NEAR_SUPPORT"; }
   else if(above && breakUp && v5>=s.minVol5){ scalpSide="LONG"; pattern="LONG_CONTINUATION"; }
   else if(below && breakDown && v5>=s.minVol5){ scalpSide="SHORT"; pattern="SHORT_CONTINUATION"; }
+  else if(strongLongTrend && softBreakUp && bullishBody && v5>=Math.max(0.85,s.minVol5*.88)){ scalpSide="LONG"; pattern="LONG_TREND_FOLLOW"; }
+  else if(strongShortTrend && softBreakDown && bearishBody && v5>=Math.max(0.85,s.minVol5*.88)){ scalpSide="SHORT"; pattern="SHORT_TREND_FOLLOW"; }
   else if(above && v5>=1.0){ scalpSide="LONG"; pattern="LONG_PRESSURE"; }
   else if(below && v5>=1.0){ scalpSide="SHORT"; pattern="SHORT_PRESSURE"; }
 
   const side = scalpSide!=="NEUTRAL" ? scalpSide : bias;
   const isLong = side!=="SHORT";
   const structure = isLong ? longStructure : shortStructure;
-  const stopPrice = isLong ? Math.min(recentLow10, e30_5)*0.998 : Math.max(recentHigh10, e30_5)*1.002;
+  const atrStopPct = clamp(Math.max(a5*1.15,0.45),0.45,Math.max(s.maxStop,0.8));
+  const minStopDistancePct = clamp(Math.max(a5*.65,0.35),0.35,0.9);
+  const longStopCandidates = [recentLow5*0.998, recentLow10*0.999, e20_5*0.997, e30_5*0.998, close*(1-atrStopPct/100)].filter(x=>Number.isFinite(x)&&x>0&&x<=close*(1-minStopDistancePct/100));
+  const shortStopCandidates = [recentHigh5*1.002, recentHigh10*1.001, e20_5*1.003, e30_5*1.002, close*(1+atrStopPct/100)].filter(x=>Number.isFinite(x)&&x>=close*(1+minStopDistancePct/100));
+  const stopPrice = isLong ? Math.max(...longStopCandidates) : Math.min(...shortStopCandidates);
   let stopPct = isLong ? (close-stopPrice)/close*100 : (stopPrice-close)/close*100;
   if(!Number.isFinite(stopPct) || stopPct<=0) stopPct = Math.max(a5*1.25,0.45);
   const range24 = close>0 ? (high24-low24)/close*100 : 0;
@@ -661,14 +705,18 @@ function analyze(symbol,ticker,h5,h1,h4,s){
   if(stopPct>2.5) score -= 10;
   score=clamp(score,0,100);
 
+  const trendPattern = ["LONG_CONTINUATION","SHORT_CONTINUATION","LONG_TREND_FOLLOW","SHORT_TREND_FOLLOW"].includes(pattern);
+  const maxDist20 = trendPattern ? 2.35 : 1.2;
+  const maxDist30 = trendPattern ? 3.20 : 1.8;
+  const minMaQuality = trendPattern ? 38 : 50;
   const reasons=[];
   if(qv<s.minQuoteVolume) reasons.push(`成交額不足 ${fmt(qv/1e6,1)}M`);
   if(side==="NEUTRAL") reasons.push("短線方向不明確");
   if(side==="LONG" && (distEma20 < 0 || distMa30 < 0)) reasons.push(`多單均線位置不佳：距20EMA ${fmt(distEma20)}%，距30MA ${fmt(distMa30)}%`);
   if(side==="SHORT" && (distEma20 > 0 || distMa30 > 0)) reasons.push(`空單均線位置不佳：距20EMA ${fmt(distEma20)}%，距30MA ${fmt(distMa30)}%`);
-  if(absDist20 > 1.2) reasons.push(`距20EMA過遠：${fmt(distEma20)}%，追價風險升高`);
-  if(absDist30 > 1.8) reasons.push(`距30MA過遠：${fmt(distMa30)}%，止損效率變差`);
-  if(maQuality < 50) reasons.push(`均線距離/排列分不足：${fmt(maQuality,0)}`);
+  if(absDist20 > maxDist20) reasons.push(`距20EMA過遠：${fmt(distEma20)}%，追價風險升高`);
+  if(absDist30 > maxDist30) reasons.push(`距30MA過遠：${fmt(distMa30)}%，止損效率變差`);
+  if(maQuality < minMaQuality) reasons.push(`均線距離/排列分不足：${fmt(maQuality,0)}`);
   if(stopPct>s.maxStop) reasons.push(`止損過大 ${fmt(stopPct)}% > ${fmt(s.maxStop)}%`);
   if(goodTradeIndex<s.minGoodIndex) reasons.push(`低損爆發指數不足 ${fmt(goodTradeIndex,0)} < ${fmt(s.minGoodIndex,0)}`);
   if(score<s.minScore) reasons.push(`Score不足 ${fmt(score,0)} < ${fmt(s.minScore,0)}`);
@@ -676,8 +724,8 @@ function analyze(symbol,ticker,h5,h1,h4,s){
   if(v1<s.minVol1h) reasons.push(`1H量比不足 ${fmt(v1)}x`);
   if(rr<s.takeRR) reasons.push(`RR不足 ${fmt(rr,2)} < ${fmt(s.takeRR,2)}`);
 
-  const nowLong = side==="LONG" && reasons.length===0 && (pattern==="LONG_CONTINUATION" || pattern==="BEAR_TRAP_REVERSAL" || pattern==="SHORT_EXHAUSTION_LONG_CONFIRMED") && above;
-  const nowShort = side==="SHORT" && reasons.length===0 && (pattern==="SHORT_CONTINUATION" || pattern==="BULL_TRAP_REVERSAL" || pattern==="LONG_EXHAUSTION_SHORT_CONFIRMED") && below;
+  const nowLong = side==="LONG" && reasons.length===0 && (pattern==="LONG_CONTINUATION" || pattern==="LONG_TREND_FOLLOW" || pattern==="BEAR_TRAP_REVERSAL" || pattern==="SHORT_EXHAUSTION_LONG_CONFIRMED") && above;
+  const nowShort = side==="SHORT" && reasons.length===0 && (pattern==="SHORT_CONTINUATION" || pattern==="SHORT_TREND_FOLLOW" || pattern==="BULL_TRAP_REVERSAL" || pattern==="LONG_EXHAUSTION_SHORT_CONFIRMED") && below;
 
   let action="NO_TRADE", grade="REJECT", planText="無交易";
   if(nowLong){
@@ -855,14 +903,14 @@ function shortTermExitReason(t, closePrice){
   const currentR = Number(t.currentR);
   const hold = Number(t.holdMin);
   if(!Number.isFinite(closePrice)||!Number.isFinite(mfeR)||!Number.isFinite(maeR)||!Number.isFinite(currentR)) return "";
-  if(Number.isFinite(bars) && bars>=3 && mfeR<0.2) return "NO_FOLLOW_THROUGH";
-  if(t.side==="LONG" && closePrice<t.entry && mfeR<0.2) return "FAILED_IMPULSE";
-  if(t.side==="SHORT" && closePrice>t.entry && mfeR<0.2) return "FAILED_IMPULSE";
+  if(Number.isFinite(bars) && bars>=6 && mfeR<0.15) return "NO_FOLLOW_THROUGH";
+  if(Number.isFinite(hold) && hold>=12 && t.side==="LONG" && closePrice<t.entry && mfeR<0.15 && currentR<-0.20) return "FAILED_IMPULSE";
+  if(Number.isFinite(hold) && hold>=12 && t.side==="SHORT" && closePrice>t.entry && mfeR<0.15 && currentR<-0.20) return "FAILED_IMPULSE";
   if(mfeR<0.2 && maeR<=-0.45) return "EARLY_INVALIDATION";
-  if(t.side==="LONG" && Number.isFinite(t.triggerCandleLow) && closePrice<t.triggerCandleLow) return "TRIGGER_CANDLE_LOST";
-  if(t.side==="SHORT" && Number.isFinite(t.triggerCandleHigh) && closePrice>t.triggerCandleHigh) return "TRIGGER_CANDLE_LOST";
-  if(Number.isFinite(hold) && hold>=60 && currentR<1.0) return "TIME_STOP";
-  if(Number.isFinite(hold) && hold>=30 && mfeR<0.5) return "TIME_STOP";
+  if(Number.isFinite(hold) && hold>=12 && t.side==="LONG" && Number.isFinite(t.triggerCandleLow) && closePrice<t.triggerCandleLow && currentR<-0.25) return "TRIGGER_CANDLE_LOST";
+  if(Number.isFinite(hold) && hold>=12 && t.side==="SHORT" && Number.isFinite(t.triggerCandleHigh) && closePrice>t.triggerCandleHigh && currentR<-0.25) return "TRIGGER_CANDLE_LOST";
+  if(Number.isFinite(hold) && hold>=90 && currentR<0.7) return "TIME_STOP";
+  if(Number.isFinite(hold) && hold>=60 && mfeR<0.35) return "TIME_STOP";
   if(mfeR>=1.0 && Number.isFinite(t.trailingStopR) && currentR<=t.trailingStopR) return "TRAILING_STOP";
   if(mfeR>=0.7 && currentR<=0.2) return "TRAILING_STOP";
   if(mfeR>=0.4 && currentR<=0) return "BREAK_EVEN";
@@ -890,14 +938,17 @@ function closeTrade(t,price,reason,ts){
 }
 function isValidNowSignal(sig){
   if(!sig || sig.grade!=="PASS") return false;
+  const minConfirmVol = Math.max(0.85, settings().minVol5*.88);
   if(sig.action==="NOW_LONG"){
-    if(sig.side!=="LONG" || sig.above!==true || sig.volRatio5<settings().minVol5) return false;
+    if(sig.side!=="LONG" || sig.above!==true || sig.volRatio5<minConfirmVol) return false;
     if(sig.pattern==="LONG_CONTINUATION") return sig.breakUp===true;
+    if(sig.pattern==="LONG_TREND_FOLLOW") return sig.breakUp===true || sig.close>=sig.prevHigh*0.9985;
     return ["BEAR_TRAP_REVERSAL","SHORT_EXHAUSTION_LONG_CONFIRMED"].includes(sig.pattern);
   }
   if(sig.action==="NOW_SHORT"){
-    if(sig.side!=="SHORT" || sig.below!==true || sig.volRatio5<settings().minVol5) return false;
+    if(sig.side!=="SHORT" || sig.below!==true || sig.volRatio5<minConfirmVol) return false;
     if(sig.pattern==="SHORT_CONTINUATION") return sig.breakDown===true;
+    if(sig.pattern==="SHORT_TREND_FOLLOW") return sig.breakDown===true || sig.close<=sig.prevLow*1.0015;
     return ["BULL_TRAP_REVERSAL","LONG_EXHAUSTION_SHORT_CONFIRMED"].includes(sig.pattern);
   }
   return false;
@@ -1193,6 +1244,7 @@ function maybeBackupBeforeVersionUpgrade(){
     exportPaperJson(`pre_update_v${prev}_to_v${APP_VERSION}`);
     showToast("已自動更新前備份", `偵測版本 ${prev} → ${APP_VERSION}，已先下載備份檔。`);
   }
+  migrateSettingsForProfitMode(prev);
   localStorage.setItem("v6_app_version", APP_VERSION);
 }
 function csvCell(v){
